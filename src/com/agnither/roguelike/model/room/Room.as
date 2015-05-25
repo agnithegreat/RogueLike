@@ -3,23 +3,14 @@
  */
 package com.agnither.roguelike.model.room
 {
-    import com.agnither.roguelike.enums.CbTypes;
-    import com.agnither.roguelike.enums.CollisionGroups;
     import com.agnither.roguelike.model.objects.GameObject;
     import com.agnither.roguelike.model.objects.Hero;
+    import com.agnither.roguelike.utils.LevelToBody;
 
     import flash.utils.getTimer;
 
-    import nape.callbacks.CbEvent;
-    import nape.callbacks.InteractionCallback;
-    import nape.callbacks.InteractionListener;
-    import nape.callbacks.InteractionType;
     import nape.geom.Vec2;
     import nape.phys.Body;
-    import nape.phys.BodyType;
-    import nape.phys.Material;
-    import nape.shape.Polygon;
-    import nape.shape.Shape;
     import nape.space.Space;
 
     import starling.animation.IAnimatable;
@@ -55,23 +46,24 @@ package com.agnither.roguelike.model.room
         private function initRoomPhysics():void
         {
             _space = new Space(new Vec2());
-            var wall: Body = new Body(BodyType.STATIC);
-            for (var i:int = -1; i <= 8; i++)
-            {
-                for (var j:int = -1; j <= 7; j++)
-                {
-                    if (i == -1 || j == -1 || i == 8 || j == 7)
-                    {
-                        var x: int = left + i*tileWidth;
-                        var y: int = up + j*tileHeight;
-                        var shape: Shape = new Polygon(Polygon.rect(x, y, tileWidth, tileHeight), new Material(0, 0, 0));
-                        var isDoor: Boolean = i == 4 || j == 3;
-                        shape.filter.collisionGroup = isDoor ? CollisionGroups.DOOR : CollisionGroups.WALL;
-                        shape.filter.collisionMask = isDoor ? ~CollisionGroups.HERO : ~0;
-                        wall.shapes.add(shape);
-                    }
-                }
-            }
+            var wall: Body = LevelToBody.create({width: 640, height: 480});
+            wall.position.setxy(320, 240);
+//            for (var i:int = -1; i <= 8; i++)
+//            {
+//                for (var j:int = -1; j <= 7; j++)
+//                {
+//                    if (i == -1 || j == -1 || i == 8 || j == 7)
+//                    {
+//                        var x: int = left + i*tileWidth;
+//                        var y: int = up + j*tileHeight;
+//                        var shape: Shape = new Polygon(Polygon.rect(x, y, tileWidth, tileHeight), new Material(0, 0, 0));
+//                        var isDoor: Boolean = i == 4 || j == 3;
+//                        shape.filter.collisionGroup = isDoor ? CollisionGroups.DOOR : CollisionGroups.WALL;
+//                        shape.filter.collisionMask = isDoor ? ~CollisionGroups.HERO : ~0;
+//                        wall.shapes.add(shape);
+//                    }
+//                }
+//            }
             wall.space = _space;
         }
 

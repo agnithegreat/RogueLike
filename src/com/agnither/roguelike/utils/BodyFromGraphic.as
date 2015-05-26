@@ -58,12 +58,6 @@ class IsoBody {
         // Recycle list nodes
         polys.clear();
 
-        // Align body with its centre of mass.
-        // Keeping track of our required graphic offset.
-        var pivot:Vec2 = body.localCOM.mul(-1);
-        body.translateShapes(pivot);
-
-        body.userData.graphicOffset = pivot;
         return body;
     }
 }

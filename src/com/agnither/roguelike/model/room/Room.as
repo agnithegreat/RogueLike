@@ -18,14 +18,6 @@ package com.agnither.roguelike.model.room
 
     public class Room extends EventDispatcher implements IAnimatable
     {
-        public static const left: int = 40;
-        public static const right: int = 600;
-        public static const up: int = 60;
-        public static const down: int = 420;
-
-        public static const tileWidth: int = 70;
-        public static const tileHeight: int = 51;
-
         private static const maxIterations: int = 500;
 
         private var _space: Space;
@@ -46,24 +38,7 @@ package com.agnither.roguelike.model.room
         private function initRoomPhysics():void
         {
             _space = new Space(new Vec2());
-            var wall: Body = LevelToBody.create({width: 640, height: 480});
-            wall.position.setxy(320, 240);
-//            for (var i:int = -1; i <= 8; i++)
-//            {
-//                for (var j:int = -1; j <= 7; j++)
-//                {
-//                    if (i == -1 || j == -1 || i == 8 || j == 7)
-//                    {
-//                        var x: int = left + i*tileWidth;
-//                        var y: int = up + j*tileHeight;
-//                        var shape: Shape = new Polygon(Polygon.rect(x, y, tileWidth, tileHeight), new Material(0, 0, 0));
-//                        var isDoor: Boolean = i == 4 || j == 3;
-//                        shape.filter.collisionGroup = isDoor ? CollisionGroups.DOOR : CollisionGroups.WALL;
-//                        shape.filter.collisionMask = isDoor ? ~CollisionGroups.HERO : ~0;
-//                        wall.shapes.add(shape);
-//                    }
-//                }
-//            }
+            var wall: Body = LevelToBody.create({});
             wall.space = _space;
         }
 

@@ -3,33 +3,46 @@
  */
 package com.agnither.roguelike.utils
 {
-    import com.agnither.roguelike.model.room.Room;
+    import com.agnither.roguelike.enums.CollisionGroups;
 
     import flash.display.BitmapData;
-    import flash.display.Shape;
+    import flash.display.MovieClip;
+    import flash.display.Sprite;
+    import flash.geom.Rectangle;
+    import flash.utils.getDefinitionByName;
 
     import nape.phys.Body;
+    import nape.phys.Material;
+    import nape.shape.Polygon;
 
     public class LevelToBody
     {
         public static function create(data: Object):Body
         {
-            var width: int = data["width"];
-            var height: int = data["height"];
+            var ResourceClass: Class = getDefinitionByName("assets.level.LevelTestMC") as Class;
+            var level: MovieClip = new ResourceClass();
+            var walls: Sprite = level["walls"];
 
-            var shape: Shape = new Shape();
-            shape.graphics.beginFill(0xFFFFFF);
-            shape.graphics.drawRect(0, 0, width, height);
-            shape.graphics.drawRect(100, 0, 100, Room.up);
-            shape.graphics.drawRect(Room.left, Room.up, Room.right-Room.left, Room.down-Room.up);
+            var bitmapData: BitmapData = new BitmapData(walls.width, walls.height, true, 0);
+            bitmapData.draw(walls);
 
-//            var tileWidth: int = data["tileWidth"];
-//            var tileHeight: int = data["tileHeight"];
+            var body: Body = BodyFromGraphic.create(bitmapData);
 
-            var bitmapData: BitmapData = new BitmapData(width, height, true, 0);
-            bitmapData.draw(shape);
+            for (var i:int = 1; i <= 4; i++)
+            {
+                var door: Sprite = level["door"+i];
+                if (door != null)
+                {
+                    var shape: Sprite = door["shape"];
+                    var rect: Rectangle = shape.getRect(level);
+                    var doorShape: Polygon = new Polygon(Polygon.rect(rect.x, rect.y, rect.width, rect.height), new Material(0, 0, 0));
+                    doorShape.filter.collisionGroup = CollisionGroups.DOOR;
+                    doorShape.filter.collisionMask = ~CollisionGroups.HERO;
+                    doorShape.body = body;
+                }
+            }
 
-            return BodyFromGraphic.create(bitmapData);
+            return body;
         }
     }
 }

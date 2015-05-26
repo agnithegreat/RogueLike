@@ -10,7 +10,7 @@ package com.agnither.roguelike.view
     {
         private var _game: GameController;
 
-        private var _room: AbstractComponent;
+        private var _room: RoomView;
         private var _hero: HeroView;
 
         public function GameView(game: GameController)
@@ -20,8 +20,7 @@ package com.agnither.roguelike.view
 
         override protected function initialize():void
         {
-            _room = new AbstractComponent();
-            _room.createFromFlash("assets.level.LevelTestMC", "level");
+            _room = new RoomView();
             addChild(_room);
 
             _hero = new HeroView(_game.hero);

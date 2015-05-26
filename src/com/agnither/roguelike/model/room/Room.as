@@ -3,11 +3,17 @@
  */
 package com.agnither.roguelike.model.room
 {
+    import com.agnither.roguelike.enums.CbTypes;
     import com.agnither.roguelike.model.objects.GameObject;
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.utils.LevelToBody;
 
     import flash.utils.getTimer;
+
+    import nape.callbacks.CbEvent;
+    import nape.callbacks.InteractionCallback;
+    import nape.callbacks.InteractionListener;
+    import nape.callbacks.InteractionType;
 
     import nape.geom.Vec2;
     import nape.phys.Body;
@@ -40,6 +46,26 @@ package com.agnither.roguelike.model.room
             _space = new Space(new Vec2());
             var wall: Body = LevelToBody.create({});
             wall.space = _space;
+
+            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.DOOR, CbTypes.HERO, handleEnterDoorSensor));
+        }
+
+        private function handleEnterDoorSensor(callback: InteractionCallback):void
+        {
+            if (_hero.x < 100)
+            {
+                _hero.place(_hero.x + 600, _hero.y);
+            } else if (_hero.x > 540)
+            {
+                _hero.place(_hero.x - 600, _hero.y);
+            }
+            if (_hero.y < 100)
+            {
+                _hero.place(_hero.x, _hero.y + 400);
+            } else if (_hero.y > 380)
+            {
+                _hero.place(_hero.x, _hero.y - 400);
+            }
         }
 
         public function setHero(hero: Hero):void

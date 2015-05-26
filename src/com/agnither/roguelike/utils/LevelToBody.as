@@ -3,6 +3,7 @@
  */
 package com.agnither.roguelike.utils
 {
+    import com.agnither.roguelike.enums.CbTypes;
     import com.agnither.roguelike.enums.CollisionGroups;
 
     import flash.display.BitmapData;
@@ -33,16 +34,26 @@ package com.agnither.roguelike.utils
                 var door: Sprite = level["door"+i];
                 if (door != null)
                 {
-                    var shape: Sprite = door["shape"];
-                    var rect: Rectangle = shape.getRect(level);
-                    var doorShape: Polygon = new Polygon(Polygon.rect(rect.x, rect.y, rect.width, rect.height), new Material(0, 0, 0));
-                    doorShape.filter.collisionGroup = CollisionGroups.DOOR;
-                    doorShape.filter.collisionMask = ~CollisionGroups.HERO;
-                    doorShape.body = body;
+                    var doorPolygon: Polygon = getPolygon(door["shape"], level);
+                    doorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    doorPolygon.filter.collisionMask = ~CollisionGroups.HERO;
+                    doorPolygon.body = body;
+
+                    var sensorPolygon: Polygon = getPolygon(door["sensor"], level);
+                    sensorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    sensorPolygon.cbTypes.add(CbTypes.DOOR);
+                    sensorPolygon.sensorEnabled = true;
+                    sensorPolygon.body = body;
                 }
             }
 
             return body;
+        }
+
+        private static function getPolygon(shape: Sprite, level: MovieClip):Polygon
+        {
+            var rect: Rectangle = shape.getRect(level);
+            return new Polygon(Polygon.rect(rect.x, rect.y, rect.width, rect.height), new Material(0, 0, 0));
         }
     }
 }

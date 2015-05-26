@@ -5,7 +5,6 @@ package com.agnither.roguelike.controller
 {
     import com.agnither.roguelike.Assets;
     import com.agnither.roguelike.view.GameView;
-    import com.agnither.roguelike.view.HeroView;
     import com.agnither.utils.KeyLogger;
     import com.agnither.utils.TouchLogger;
     import com.agnither.utils.gui.DBSWFLoader;

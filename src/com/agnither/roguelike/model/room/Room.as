@@ -8,6 +8,8 @@ package com.agnither.roguelike.model.room
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.utils.LevelToBody;
 
+    import flash.geom.Point;
+
     import flash.utils.getTimer;
 
     import nape.callbacks.CbEvent;
@@ -24,6 +26,8 @@ package com.agnither.roguelike.model.room
 
     public class Room extends EventDispatcher implements IAnimatable
     {
+        public static const NEXT_ROOM: String = "next_room_GameController";
+
         private static const maxIterations: int = 500;
 
         private var _space: Space;
@@ -52,20 +56,10 @@ package com.agnither.roguelike.model.room
 
         private function handleEnterDoorSensor(callback: InteractionCallback):void
         {
-            if (_hero.x < 100)
-            {
-                _hero.place(_hero.x + 600, _hero.y);
-            } else if (_hero.x > 540)
-            {
-                _hero.place(_hero.x - 600, _hero.y);
-            }
-            if (_hero.y < 100)
-            {
-                _hero.place(_hero.x, _hero.y + 400);
-            } else if (_hero.y > 380)
-            {
-                _hero.place(_hero.x, _hero.y - 400);
-            }
+            var direction: Point = new Point();
+            direction.x = Math.round((_hero.x - 320)/320);
+            direction.y = Math.round((_hero.y - 240)/240);
+            dispatchEventWith(NEXT_ROOM, false, direction);
         }
 
         public function setHero(hero: Hero):void

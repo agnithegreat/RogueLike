@@ -8,10 +8,13 @@ package com.agnither.roguelike.controller
     import com.agnither.roguelike.model.room.RoomFactory;
     import com.agnither.roguelike.model.room.RoomState;
 
+    import flash.geom.Point;
+
     import flash.utils.Dictionary;
 
     import starling.animation.Juggler;
     import starling.core.Starling;
+    import starling.events.Event;
     import starling.events.EventDispatcher;
 
     public class GameController extends EventDispatcher
@@ -21,6 +24,11 @@ package com.agnither.roguelike.controller
         private var _rooms: Dictionary;
 
         private var _currentRoom: Room;
+        public function get room():Room
+        {
+            return _currentRoom;
+        }
+
         public function get hero():Hero
         {
             return _currentRoom.hero;
@@ -33,6 +41,7 @@ package com.agnither.roguelike.controller
             _rooms = new Dictionary();
 
             _currentRoom = new Room();
+            _currentRoom.addEventListener(Room.NEXT_ROOM, handleNextRoom);
             _gameJuggler.add(_currentRoom);
         }
 
@@ -67,6 +76,18 @@ package com.agnither.roguelike.controller
         public function stop():void
         {
             Starling.juggler.remove(_gameJuggler);
+        }
+
+        private function handleNextRoom(event: Event):void
+        {
+            stop();
+            Starling.juggler.delayCall(nextRoom, 0.4, event.data as Point);
+        }
+
+        private function nextRoom(direction: Point):void
+        {
+            hero.place(hero.x - direction.x * 580, hero.y - direction.y * 400);
+            start();
         }
     }
 }

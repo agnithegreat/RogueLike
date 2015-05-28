@@ -9,17 +9,25 @@ package com.agnither.roguelike.view
 
     import flash.geom.Point;
 
+    import starling.animation.IAnimatable;
     import starling.animation.Transitions;
     import starling.core.Starling;
+    import starling.display.Sprite;
     import starling.events.Event;
 
     public class GameView extends AbstractComponent
     {
         private var _game: GameController;
 
+        private var _rooms: Sprite;
+        private var _hero: HeroView;
+
         private var _room: RoomView;
         private var _next: RoomView;
-        private var _hero: HeroView;
+
+        private var _pivot: Point;
+
+        private var _tween: IAnimatable;
 
         public function GameView(game: GameController)
         {
@@ -29,39 +37,50 @@ package com.agnither.roguelike.view
 
         override protected function initialize():void
         {
+            _rooms = new Sprite();
+            addChild(_rooms);
+
             _room = new RoomView();
-            addChild(_room);
+            _rooms.addChild(_room);
 
             _next = new RoomView();
 
             _hero = new HeroView(_game.hero);
             addChild(_hero);
+
+            _pivot = new Point();
         }
 
         private function handleNextRoom(event: Event):void
         {
+            if (_tween)
+            {
+                Starling.juggler.remove(_tween);
+                completeTween();
+            }
+
             var direction: Point = event.data as Point;
             var dx: int = direction.x * 640;
             var dy: int = direction.y * 480;
             _next.x = _room.x + dx;
             _next.y = _room.y + dy;
-            addChildAt(_next, 1);
+            _rooms.addChild(_next);
 
-            Starling.juggler.tween(this, 0.4, {pivotX: pivotX + dx, pivotY: pivotY + dy, transition: Transitions.EASE_OUT, onComplete: completeTween});
+            _pivot.x += dx;
+            _pivot.y += dy;
+
+            _tween = Starling.juggler.tween(this, 0.5, {pivotX: _pivot.x, pivotY: _pivot.y, transition: Transitions.EASE_OUT, onComplete: completeTween});
         }
 
         private function completeTween():void
         {
-//            pivotX = 0;
-//            pivotY = 0;
+            _rooms.removeChild(_room);
 
             var temp: RoomView = _next;
             _next = _room;
             _room = temp;
-            removeChild(_next);
 
-//            _room.x = 0;
-//            _room.y = 0;
+            _tween = null;
         }
     }
 }

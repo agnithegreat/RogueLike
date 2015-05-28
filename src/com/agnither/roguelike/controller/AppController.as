@@ -45,7 +45,9 @@ package com.agnither.roguelike.controller
 
         private function start():void
         {
-            Resources.addAtlas("level", AtlasFactory.fromAtlasDefinition("assets.level.LevelTestMC"));
+            Resources.addAtlas("level1", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest1MC"));
+            Resources.addAtlas("level2", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest2MC"));
+            Resources.addAtlas("level3", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest3MC"));
 
             _gameController = new GameController();
             _gameController.init();

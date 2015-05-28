@@ -3,6 +3,7 @@
  */
 package com.agnither.roguelike.view
 {
+    import com.agnither.roguelike.model.room.RoomState;
     import com.agnither.utils.gui.components.AbstractComponent;
 
     import flash.utils.Dictionary;
@@ -16,14 +17,18 @@ package com.agnither.roguelike.view
             return manifest;
         }
 
-        public function RoomView()
+        private var _roomState: RoomState;
+
+        public function RoomView(room: RoomState)
         {
+            _roomState = room;
+
             super();
         }
 
         override protected function initialize():void
         {
-            createFromFlash("assets.level.LevelTestMC", "level");
+            createFromFlash("assets.level.LevelTest" + _roomState.type + "MC", "level" + _roomState.type);
             getChild("walls").removeFromParent(true);
         }
     }

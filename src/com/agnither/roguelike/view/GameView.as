@@ -40,10 +40,8 @@ package com.agnither.roguelike.view
             _rooms = new Sprite();
             addChild(_rooms);
 
-            _room = new RoomView();
+            _room = new RoomView(_game.room.currentRoom);
             _rooms.addChild(_room);
-
-            _next = new RoomView();
 
             _hero = new HeroView(_game.hero);
             addChild(_hero);
@@ -58,6 +56,8 @@ package com.agnither.roguelike.view
                 Starling.juggler.remove(_tween);
                 completeTween();
             }
+
+            _next = new RoomView(_game.room.currentRoom);
 
             var direction: Point = event.data as Point;
             var dx: int = direction.x * 640;
@@ -74,11 +74,12 @@ package com.agnither.roguelike.view
 
         private function completeTween():void
         {
-            _rooms.removeChild(_room);
-
             var temp: RoomView = _next;
             _next = _room;
             _room = temp;
+
+            _next.destroy();
+            _next = null;
 
             _tween = null;
         }

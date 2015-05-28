@@ -7,8 +7,7 @@ package com.agnither.roguelike.enums
 
     public class CbTypes
     {
-        public static const ROOM_ENTER: CbType = new CbType();
-        public static const ROOM_EXIT: CbType = new CbType();
+        public static const DOOR: CbType = new CbType();
         public static const HERO: CbType = new CbType();
     }
 }

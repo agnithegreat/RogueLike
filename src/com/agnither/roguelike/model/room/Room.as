@@ -9,7 +9,6 @@ package com.agnither.roguelike.model.room
     import com.agnither.roguelike.utils.LevelToBody;
 
     import flash.geom.Point;
-
     import flash.utils.getTimer;
 
     import nape.callbacks.CbEvent;
@@ -33,6 +32,10 @@ package com.agnither.roguelike.model.room
         private var _space: Space;
 
         private var _roomState: RoomState;
+        public function get currentRoom():RoomState
+        {
+            return _roomState;
+        }
 
         private var _wall: Body;
 
@@ -42,8 +45,6 @@ package com.agnither.roguelike.model.room
             return _hero;
         }
 
-        private var _isOutOfRoom: Boolean;
-
         public function Room()
         {
             initRoomPhysics();
@@ -52,33 +53,27 @@ package com.agnither.roguelike.model.room
         private function initRoomPhysics():void
         {
             _space = new Space(new Vec2());
-            _wall = LevelToBody.create({});
-            _wall.space = _space;
 
-            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.ROOM_EXIT, CbTypes.HERO, handleExitRoomSensor));
-            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.ROOM_ENTER, CbTypes.HERO, handleEnterRoomSensor));
+            _space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, CbTypes.DOOR, CbTypes.HERO, handleDoorSensor));
         }
 
-        private function handleExitRoomSensor(callback: InteractionCallback):void
+        private function handleDoorSensor(callback: InteractionCallback):void
         {
-            if (_isOutOfRoom) return;
+            var heroX: int = _hero.x - _wall.position.x;
+            var heroY: int = _hero.y - _wall.position.y;
 
             var direction: Point = new Point();
-            direction.x = Math.round((_hero.x - _wall.position.x - 320)/320);
-            direction.y = Math.round((_hero.y - _wall.position.y - 240)/240);
-            dispatchEventWith(NEXT_ROOM, false, direction);
 
-            _wall.space = null;
-            _wall.position.x += direction.x * 640;
-            _wall.position.y += direction.y * 480;
-            _wall.space = _space;
+            if (heroX < 0) direction.x = -1;
+            else if (heroX > 640) direction.x = 1;
 
-            _isOutOfRoom = true;
-        }
+            if (heroY < 0) direction.y = -1;
+            else if (heroY > 480) direction.y = 1;
 
-        private function handleEnterRoomSensor(callback: InteractionCallback):void
-        {
-            _isOutOfRoom = false;
+            if (direction.length > 0)
+            {
+                dispatchEventWith(NEXT_ROOM, false, direction);
+            }
         }
 
         public function setHero(hero: Hero):void
@@ -90,6 +85,15 @@ package com.agnither.roguelike.model.room
         public function setState(roomState: RoomState):void
         {
             _roomState = roomState;
+
+            if (_wall != null)
+            {
+                _wall.space = null;
+                _wall = null;
+            }
+
+            _wall = LevelToBody.create(_roomState);
+            _wall.space = _space;
         }
 
         public function advanceTime(time: Number):void

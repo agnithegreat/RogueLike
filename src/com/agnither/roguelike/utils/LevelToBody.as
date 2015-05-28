@@ -5,58 +5,64 @@ package com.agnither.roguelike.utils
 {
     import com.agnither.roguelike.enums.CbTypes;
     import com.agnither.roguelike.enums.CollisionGroups;
+    import com.agnither.roguelike.enums.DirectionName;
+    import com.agnither.roguelike.model.room.RoomState;
+    import com.agnither.utils.gui.components.AbstractComponent;
 
-    import flash.display.BitmapData;
-    import flash.display.MovieClip;
+    import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
+
     import flash.display.Sprite;
     import flash.geom.Rectangle;
-    import flash.utils.getDefinitionByName;
 
     import nape.phys.Body;
+    import nape.phys.BodyType;
     import nape.phys.Material;
     import nape.shape.Polygon;
 
     public class LevelToBody
     {
-        public static function create(data: Object):Body
+        public static function create(room: RoomState):Body
         {
-            var ResourceClass: Class = getDefinitionByName("assets.level.LevelTestMC") as Class;
-            var level: MovieClip = new ResourceClass();
+            var definition: String = "assets.level.LevelTest" + room.type + "MC";
+            var level: DisplayObjectContainer = AbstractComponent.getResource(definition);
             var walls: Sprite = level["walls"];
 
-            var bitmapData: BitmapData = new BitmapData(walls.width, walls.height, true, 0);
-            bitmapData.draw(walls);
+            var body: Body = new Body(BodyType.STATIC);
+            body.position.x = room.size.x;
+            body.position.y = room.size.y;
 
-            var body: Body = BodyFromGraphic.create(bitmapData);
-
-            for (var i:int = 1; i <= 4; i++)
+            var wallsAmount: int = walls.numChildren;
+            for (var i:int = 0; i < wallsAmount; i++)
             {
-                var door: Sprite = level["door"+i];
+                var wallPolygon: Polygon = getPolygon(walls.getChildAt(i), level);
+                wallPolygon.filter.collisionGroup = CollisionGroups.WALL;
+                wallPolygon.filter.collisionMask = ~0;
+                wallPolygon.body = body;
+            }
+
+            for each (var direction: DirectionName in DirectionName.DIRECTIONS)
+            {
+                var door: Sprite = level[direction.name];
                 if (door != null)
                 {
                     var doorPolygon: Polygon = getPolygon(door["shape"], level);
                     doorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
-                    doorPolygon.filter.collisionMask = ~CollisionGroups.HERO;
+                    doorPolygon.filter.collisionMask = room.getDoorId(direction) ? ~CollisionGroups.HERO : ~0;
                     doorPolygon.body = body;
 
-                    var enterPolygon: Polygon = getPolygon(door["enter_sensor"], level);
-                    enterPolygon.filter.collisionGroup = CollisionGroups.DOOR;
-                    enterPolygon.cbTypes.add(CbTypes.ROOM_ENTER);
-                    enterPolygon.sensorEnabled = true;
-                    enterPolygon.body = body;
-
-                    var exitPolygon: Polygon = getPolygon(door["exit_sensor"], level);
-                    exitPolygon.filter.collisionGroup = CollisionGroups.DOOR;
-                    exitPolygon.cbTypes.add(CbTypes.ROOM_EXIT);
-                    exitPolygon.sensorEnabled = true;
-                    exitPolygon.body = body;
+                    var sensorPolygon: Polygon = getPolygon(door["sensor"], level);
+                    sensorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    sensorPolygon.cbTypes.add(CbTypes.DOOR);
+                    sensorPolygon.sensorEnabled = true;
+                    sensorPolygon.body = body;
                 }
             }
 
             return body;
         }
 
-        private static function getPolygon(shape: Sprite, level: MovieClip):Polygon
+        private static function getPolygon(shape: DisplayObject, level: DisplayObjectContainer):Polygon
         {
             var rect: Rectangle = shape.getRect(level);
             return new Polygon(Polygon.rect(rect.x, rect.y, rect.width, rect.height), new Material(0, 0, 0));

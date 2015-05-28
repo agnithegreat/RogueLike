@@ -39,11 +39,17 @@ package com.agnither.roguelike.utils
                     doorPolygon.filter.collisionMask = ~CollisionGroups.HERO;
                     doorPolygon.body = body;
 
-                    var sensorPolygon: Polygon = getPolygon(door["sensor"], level);
-                    sensorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
-                    sensorPolygon.cbTypes.add(CbTypes.DOOR);
-                    sensorPolygon.sensorEnabled = true;
-                    sensorPolygon.body = body;
+                    var enterPolygon: Polygon = getPolygon(door["enter_sensor"], level);
+                    enterPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    enterPolygon.cbTypes.add(CbTypes.ROOM_ENTER);
+                    enterPolygon.sensorEnabled = true;
+                    enterPolygon.body = body;
+
+                    var exitPolygon: Polygon = getPolygon(door["exit_sensor"], level);
+                    exitPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    exitPolygon.cbTypes.add(CbTypes.ROOM_EXIT);
+                    exitPolygon.sensorEnabled = true;
+                    exitPolygon.body = body;
                 }
             }
 

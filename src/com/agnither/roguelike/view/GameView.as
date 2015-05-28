@@ -43,25 +43,25 @@ package com.agnither.roguelike.view
             var direction: Point = event.data as Point;
             var dx: int = direction.x * 640;
             var dy: int = direction.y * 480;
-            _next.x = dx;
-            _next.y = dy;
+            _next.x = _room.x + dx;
+            _next.y = _room.y + dy;
             addChildAt(_next, 1);
 
-            Starling.juggler.tween(this, 0.4, {pivotX: dx, pivotY: dy, transition: Transitions.EASE_OUT, onComplete: completeTween});
+            Starling.juggler.tween(this, 0.4, {pivotX: pivotX + dx, pivotY: pivotY + dy, transition: Transitions.EASE_OUT, onComplete: completeTween});
         }
 
         private function completeTween():void
         {
-            pivotX = 0;
-            pivotY = 0;
+//            pivotX = 0;
+//            pivotY = 0;
 
             var temp: RoomView = _next;
             _next = _room;
             _room = temp;
             removeChild(_next);
 
-            _room.x = 0;
-            _room.y = 0;
+//            _room.x = 0;
+//            _room.y = 0;
         }
     }
 }

@@ -34,11 +34,15 @@ package com.agnither.roguelike.model.room
 
         private var _roomState: RoomState;
 
+        private var _wall: Body;
+
         private var _hero: Hero;
         public function get hero():Hero
         {
             return _hero;
         }
+
+        private var _isOutOfRoom: Boolean;
 
         public function Room()
         {
@@ -48,18 +52,33 @@ package com.agnither.roguelike.model.room
         private function initRoomPhysics():void
         {
             _space = new Space(new Vec2());
-            var wall: Body = LevelToBody.create({});
-            wall.space = _space;
+            _wall = LevelToBody.create({});
+            _wall.space = _space;
 
-            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.DOOR, CbTypes.HERO, handleEnterDoorSensor));
+            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.ROOM_EXIT, CbTypes.HERO, handleExitRoomSensor));
+            _space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.SENSOR, CbTypes.ROOM_ENTER, CbTypes.HERO, handleEnterRoomSensor));
         }
 
-        private function handleEnterDoorSensor(callback: InteractionCallback):void
+        private function handleExitRoomSensor(callback: InteractionCallback):void
         {
+            if (_isOutOfRoom) return;
+
             var direction: Point = new Point();
-            direction.x = Math.round((_hero.x - 320)/320);
-            direction.y = Math.round((_hero.y - 240)/240);
+            direction.x = Math.round((_hero.x - _wall.position.x - 320)/320);
+            direction.y = Math.round((_hero.y - _wall.position.y - 240)/240);
             dispatchEventWith(NEXT_ROOM, false, direction);
+
+            _wall.space = null;
+            _wall.position.x += direction.x * 640;
+            _wall.position.y += direction.y * 480;
+            _wall.space = _space;
+
+            _isOutOfRoom = true;
+        }
+
+        private function handleEnterRoomSensor(callback: InteractionCallback):void
+        {
+            _isOutOfRoom = false;
         }
 
         public function setHero(hero: Hero):void

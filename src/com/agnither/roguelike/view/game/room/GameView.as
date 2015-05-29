@@ -1,4 +1,4 @@
-package com.agnither.roguelike.view
+package com.agnither.roguelike.view.game.room
 {
     import com.agnither.roguelike.controller.GameController;
     import com.agnither.roguelike.model.room.Room;

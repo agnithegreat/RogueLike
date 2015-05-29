@@ -57,6 +57,7 @@ package com.agnither.roguelike.model.room
         public function setState(roomState: RoomState):void
         {
             _roomState = roomState;
+            _roomState.visited = true;
 
             if (_wall != null)
             {

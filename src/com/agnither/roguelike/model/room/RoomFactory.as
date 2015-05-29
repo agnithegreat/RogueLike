@@ -13,7 +13,7 @@ package com.agnither.roguelike.model.room
         public static function createMap():Dictionary
         {
             _map = new Dictionary();
-            _roomsLimit = 10;
+            _roomsLimit = 20;
 
             var room: RoomState = generateRoom(0, 0);
             var currentList: Array = [room];

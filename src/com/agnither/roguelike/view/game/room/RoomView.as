@@ -1,4 +1,4 @@
-package com.agnither.roguelike.view
+package com.agnither.roguelike.view.game.room
 {
     import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.room.RoomState;

@@ -1,7 +1,7 @@
 /**
  * Created by desktop on 20.05.2015.
  */
-package com.agnither.roguelike.view
+package com.agnither.roguelike.view.game.room
 {
     import com.agnither.roguelike.Assets;
     import com.agnither.roguelike.model.objects.GameObject;

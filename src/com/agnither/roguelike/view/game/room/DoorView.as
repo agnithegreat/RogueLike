@@ -1,7 +1,7 @@
 /**
  * Created by desktop on 26.05.2015.
  */
-package com.agnither.roguelike.view
+package com.agnither.roguelike.view.game.room
 {
     import com.agnither.utils.gui.components.AbstractComponent;
 

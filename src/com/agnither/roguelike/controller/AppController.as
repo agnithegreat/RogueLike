@@ -4,7 +4,8 @@
 package com.agnither.roguelike.controller
 {
     import com.agnither.roguelike.Assets;
-    import com.agnither.roguelike.view.GameView;
+    import com.agnither.roguelike.view.game.minimap.MinimapView;
+    import com.agnither.roguelike.view.game.room.GameView;
     import com.agnither.utils.KeyLogger;
     import com.agnither.utils.TouchLogger;
     import com.agnither.utils.gui.DBSWFLoader;
@@ -45,6 +46,8 @@ package com.agnither.roguelike.controller
 
         private function start():void
         {
+            Resources.addAtlas("minimap", AtlasFactory.fromAtlasDefinition("assets.map.AtlasMC"));
+
             Resources.addAtlas("level1", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest1MC"));
             Resources.addAtlas("level2", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest2MC"));
             Resources.addAtlas("level3", AtlasFactory.fromAtlasDefinition("assets.level.LevelTest3MC"));
@@ -54,13 +57,18 @@ package com.agnither.roguelike.controller
 
             var gameView: GameView = new GameView(_gameController);
             _root.addChild(gameView);
+
+            var minimapView: MinimapView = new MinimapView(_gameController);
+            _root.addChild(minimapView);
         }
 
         private function loadAssets():void
         {
             _swfLoader = new SWFLoader();
             _swfLoader.addEventListener(Event.COMPLETE, handleLoadLevel);
-            _swfLoader.load("level");
+            _swfLoader.addFile("level");
+            _swfLoader.addFile("minimap");
+            _swfLoader.load();
         }
 
         private function handleLoadLevel(event: Event):void

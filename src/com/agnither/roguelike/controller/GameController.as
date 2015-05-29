@@ -16,6 +16,10 @@ package com.agnither.roguelike.controller
         private var _gameJuggler: Juggler;
 
         private var _rooms: Dictionary;
+        public function get rooms():Dictionary
+        {
+            return _rooms;
+        }
 
         private var _currentRoom: Room;
         public function get room():Room

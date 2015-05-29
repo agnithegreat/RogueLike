@@ -69,6 +69,10 @@ package com.agnither.roguelike.model.room
                     if (neighbour.getDoorId(opposite))
                     {
                         room.addDoor(direction, neighbour.id);
+                    } else if (Math.random() < 0.5)
+                    {
+                        room.addDoor(direction, neighbour.id);
+                        neighbour.addDoor(opposite, room.id);
                     }
                 } else if (_roomsLimit > 0 && Math.random() < 0.2 * nextPos.length)
                 {

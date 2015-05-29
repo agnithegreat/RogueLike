@@ -7,30 +7,21 @@ package com.agnither.roguelike.enums
 
     public class DirectionName
     {
-        public static const LEFT: DirectionName = new DirectionName("left");
-        public static const RIGHT: DirectionName = new DirectionName("right");
-        public static const UP: DirectionName = new DirectionName("up");
-        public static const DOWN: DirectionName = new DirectionName("down");
+        public static const LEFT: DirectionName = new DirectionName("left", new Point(-1, 0));
+        public static const RIGHT: DirectionName = new DirectionName("right", new Point(1, 0));
+        public static const UP: DirectionName = new DirectionName("up", new Point(0, -1));
+        public static const DOWN: DirectionName = new DirectionName("down", new Point(0, 1));
 
         public static const DIRECTIONS: Array = [LEFT, RIGHT, UP, DOWN];
 
-        public static function getDirection(direction: Point):DirectionName
+        public static function getDirection(dir: Point):DirectionName
         {
-            if (direction.x < 0)
+            for each (var direction: DirectionName in DIRECTIONS)
             {
-                return LEFT;
-            }
-            if (direction.x > 0)
-            {
-                return RIGHT;
-            }
-            if (direction.y < 0)
-            {
-                return UP;
-            }
-            if (direction.y > 0)
-            {
-                return DOWN;
+                if (direction.direction.equals(dir))
+                {
+                    return direction;
+                }
             }
             return null;
         }
@@ -41,9 +32,16 @@ package com.agnither.roguelike.enums
             return _name;
         }
 
-        public function DirectionName(name: String)
+        private var _direction: Point;
+        public function get direction():Point
+        {
+            return _direction;
+        }
+
+        public function DirectionName(name: String, direction: Point)
         {
             _name = name;
+            _direction = direction;
         }
     }
 }

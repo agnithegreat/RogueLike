@@ -7,10 +7,8 @@ package com.agnither.roguelike.controller
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.model.room.Room;
     import com.agnither.roguelike.model.room.RoomFactory;
-    import com.agnither.roguelike.model.room.RoomState;
 
     import flash.geom.Point;
-
     import flash.utils.Dictionary;
 
     import starling.animation.Juggler;
@@ -39,8 +37,6 @@ package com.agnither.roguelike.controller
         {
             _gameJuggler = new Juggler();
 
-            _rooms = new Dictionary();
-
             _currentRoom = new Room();
             _currentRoom.addEventListener(Room.NEXT_ROOM, handleNextRoom);
             _gameJuggler.add(_currentRoom);
@@ -48,9 +44,9 @@ package com.agnither.roguelike.controller
 
         public function init():void
         {
-            var roomId: String = "0.0";
-            createRoom(roomId);
-            moveTo(roomId);
+            _rooms = RoomFactory.createMap();
+
+            moveTo("0.0");
 
             var hero: Hero = new Hero();
             hero.init({hp: 5, speed: 200});
@@ -58,21 +54,6 @@ package com.agnither.roguelike.controller
             _currentRoom.setHero(hero);
 
             start();
-        }
-
-        public function createRoom(id: String):void
-        {
-            if (!_rooms[id])
-            {
-                var xy: Array = id.split(".");
-                _rooms[id] = RoomFactory.createMockRoom(xy[0], xy[1]);
-            }
-            addRoomState(_rooms[id]);
-        }
-
-        public function addRoomState(room: RoomState):void
-        {
-            _rooms[room.id] = room;
         }
 
         public function moveTo(id: String):void
@@ -94,7 +75,6 @@ package com.agnither.roguelike.controller
         {
             var direction: Point = event.data as Point;
             var roomId: String = _currentRoom.currentRoom.getDoorId(DirectionName.getDirection(direction));
-            createRoom(roomId);
             moveTo(roomId);
         }
     }

@@ -47,7 +47,7 @@ package com.agnither.roguelike.utils
                 if (door != null)
                 {
                     var doorPolygon: Polygon = getPolygon(door["shape"], level);
-                    doorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
+                    doorPolygon.filter.collisionGroup = CollisionGroups.WALL;
                     doorPolygon.filter.collisionMask = room.getDoorId(direction) ? ~CollisionGroups.HERO : ~0;
                     doorPolygon.body = body;
 

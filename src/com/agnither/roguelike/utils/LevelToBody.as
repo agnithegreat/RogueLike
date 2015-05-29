@@ -29,8 +29,8 @@ package com.agnither.roguelike.utils
             var walls: Sprite = level["walls"];
 
             var body: Body = new Body(BodyType.STATIC);
-            body.position.x = room.size.x;
-            body.position.y = room.size.y;
+            body.position.x = room.size.x * 640;
+            body.position.y = room.size.y * 480;
 
             var wallsAmount: int = walls.numChildren;
             for (var i:int = 0; i < wallsAmount; i++)

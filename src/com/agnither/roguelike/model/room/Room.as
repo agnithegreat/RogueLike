@@ -4,6 +4,7 @@
 package com.agnither.roguelike.model.room
 {
     import com.agnither.roguelike.enums.CbTypes;
+    import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.objects.GameObject;
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.utils.LevelToBody;
@@ -26,6 +27,7 @@ package com.agnither.roguelike.model.room
     public class Room extends EventDispatcher implements IAnimatable
     {
         public static const NEXT_ROOM: String = "next_room_GameController";
+        public static const TO_ROOM: String = "to_room_GameController";
 
         private static const maxIterations: int = 500;
 
@@ -57,25 +59,6 @@ package com.agnither.roguelike.model.room
             _space.listeners.add(new InteractionListener(CbEvent.ONGOING, InteractionType.SENSOR, CbTypes.DOOR, CbTypes.HERO, handleDoorSensor));
         }
 
-        private function handleDoorSensor(callback: InteractionCallback):void
-        {
-            var heroX: int = _hero.x - _wall.position.x;
-            var heroY: int = _hero.y - _wall.position.y;
-
-            var direction: Point = new Point();
-
-            if (heroX < 0) direction.x = -1;
-            else if (heroX > 640) direction.x = 1;
-
-            if (heroY < 0) direction.y = -1;
-            else if (heroY > 480) direction.y = 1;
-
-            if (direction.length > 0)
-            {
-                dispatchEventWith(NEXT_ROOM, false, direction);
-            }
-        }
-
         public function setHero(hero: Hero):void
         {
             _hero = hero;
@@ -94,6 +77,8 @@ package com.agnither.roguelike.model.room
 
             _wall = LevelToBody.create(_roomState);
             _wall.space = _space;
+
+            dispatchEventWith(TO_ROOM, false, _roomState);
         }
 
         public function advanceTime(time: Number):void
@@ -122,6 +107,26 @@ package com.agnither.roguelike.model.room
             for each (var gameObject:GameObject in _roomState.gameObjects)
             {
                 gameObject.advanceTime(time);
+            }
+        }
+
+        private function handleDoorSensor(callback: InteractionCallback):void
+        {
+            var heroX: int = _hero.x - _wall.position.x;
+            var heroY: int = _hero.y - _wall.position.y;
+
+            var direction: Point = new Point();
+
+            if (heroX < 0) direction.x = -1;
+            else if (heroX > 640) direction.x = 1;
+
+            if (heroY < 0) direction.y = -1;
+            else if (heroY > 480) direction.y = 1;
+
+            if (direction.length > 0)
+            {
+                var dir: DirectionName = DirectionName.getDirection(direction);
+                dispatchEventWith(NEXT_ROOM, false, _roomState.getDoorId(dir));
             }
         }
     }

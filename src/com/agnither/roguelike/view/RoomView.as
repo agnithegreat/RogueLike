@@ -3,7 +3,8 @@
  */
 package com.agnither.roguelike.view
 {
-    import com.agnither.roguelike.model.room.RoomState;
+import com.agnither.roguelike.enums.DirectionName;
+import com.agnither.roguelike.model.room.RoomState;
     import com.agnither.utils.gui.components.AbstractComponent;
 
     import flash.utils.Dictionary;
@@ -30,6 +31,11 @@ package com.agnither.roguelike.view
         {
             createFromFlash("assets.level.LevelTest" + _roomState.type + "MC", "level" + _roomState.type);
             getChild("walls").removeFromParent(true);
+
+            for each (var direction: DirectionName in DirectionName.DIRECTIONS)
+            {
+                getChild(direction.name).visible = _roomState.getDoorId(direction) != null;
+            }
         }
     }
 }

@@ -26,6 +26,18 @@ package com.agnither.roguelike.enums
             return null;
         }
 
+        public static function getOpposite(dir: Point):DirectionName
+        {
+            for each (var direction: DirectionName in DIRECTIONS)
+            {
+                if (direction.direction.x == -dir.x && direction.direction.y == -dir.y)
+                {
+                    return direction;
+                }
+            }
+            return null;
+        }
+
         private var _name: String;
         public function get name():String
         {

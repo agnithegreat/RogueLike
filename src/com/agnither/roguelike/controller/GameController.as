@@ -3,12 +3,10 @@
  */
 package com.agnither.roguelike.controller
 {
-    import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.model.room.Room;
     import com.agnither.roguelike.model.room.RoomFactory;
 
-    import flash.geom.Point;
     import flash.utils.Dictionary;
 
     import starling.animation.Juggler;
@@ -73,9 +71,11 @@ package com.agnither.roguelike.controller
 
         private function handleNextRoom(event: Event):void
         {
-            var direction: Point = event.data as Point;
-            var roomId: String = _currentRoom.currentRoom.getDoorId(DirectionName.getDirection(direction));
-            moveTo(roomId);
+            var roomId: String = event.data as String;
+            if (roomId != null)
+            {
+                moveTo(roomId);
+            }
         }
     }
 }

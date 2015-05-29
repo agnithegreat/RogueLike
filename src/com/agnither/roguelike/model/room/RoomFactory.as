@@ -16,11 +16,9 @@ package com.agnither.roguelike.model.room
         public static function createMap():Dictionary
         {
             _map = new Dictionary();
-            _roomsLimit = 10;
+            _roomsLimit = 15;
 
             var room: RoomState = generateRoom(0, 0);
-            _map[room.id] = room;
-
             var currentList: Array = [room];
             var nextList: Array;
 
@@ -31,18 +29,8 @@ package com.agnither.roguelike.model.room
                 var roomsLength: int = currentList.length;
                 for (var i:int = 0; i < roomsLength; i++)
                 {
-                    room = currentList[i];
-                    for each (var direction:DirectionName in DirectionName.DIRECTIONS)
-                    {
-                        var doorId: String = room.getDoorId(direction);
-                        if (doorId != null && _map[doorId] == null)
-                        {
-                            var pos: Array = doorId.split(".");
-                            var newRoom: RoomState = generateRoom(pos[0], pos[1]);
-                            _map[newRoom.id] = newRoom;
-                            nextList.push(newRoom);
-                        }
-                    }
+                    var neighbours: Array = generateNeighbours(currentList[i]);
+                    nextList = nextList.concat(neighbours);
                 }
 
                 currentList = nextList;
@@ -53,23 +41,45 @@ package com.agnither.roguelike.model.room
 
         private static function generateRoom(x: int, y: int):RoomState
         {
-            var id: String = getId(x, y);
-            var type: int = Math.random() * 3 + 1;
+            var data: Object = {};
+            data["x"] = x;
+            data["y"] = y;
+            data["type"] = Math.random() * 3 + 1;
 
-            var position: Point = new Point(x, y);
+            var room: RoomState = new RoomState();
+            room.init(data);
+            _map[room.id] = room;
+            _roomsLimit--;
+
+            return room;
+        }
+
+        private static function generateNeighbours(room: RoomState):Array
+        {
+            var position: Point = new Point(room.size.x, room.size.y);
             var nextPos: Point;
+            var opposite: DirectionName;
 
-            var doors: Dictionary = new Dictionary();
+            var neighbours: Array = [];
             for each (var direction: DirectionName in DirectionName.DIRECTIONS)
             {
                 nextPos = position.add(direction.direction);
-                if (nextPos.length < position.length)
+                var roomId: String = getId(nextPos.x, nextPos.y);
+                var neighbour: RoomState = _map[roomId];
+                if (neighbour)
                 {
-                    doors[direction] = getId(nextPos.x, nextPos.y);
-                } else if (_roomsLimit > 0 && Math.random() < 0.5)
+                    opposite = DirectionName.getOpposite(direction.direction);
+                    if (neighbour.getDoorId(opposite))
+                    {
+                        room.addDoor(direction, neighbour.id);
+                    }
+                } else if (_roomsLimit > 0 && Math.random() < 0.7)
                 {
-                    _roomsLimit--;
-                    doors[direction] = getId(nextPos.x, nextPos.y);
+                    neighbour = generateRoom(nextPos.x, nextPos.y);
+                    room.addDoor(direction, neighbour.id);
+                    opposite = DirectionName.getOpposite(direction.direction);
+                    neighbour.addDoor(opposite, room.id);
+                    neighbours.push(neighbour);
                 }
             }
 
@@ -77,50 +87,18 @@ package com.agnither.roguelike.model.room
             {
                 var randDirection:int = DirectionName.DIRECTIONS.length * Math.random();
                 direction = DirectionName.DIRECTIONS[randDirection];
-                if (doors[direction] == null)
+                nextPos = position.add(direction.direction);
+                if (_map[getId(nextPos.x, nextPos.y)] == null)
                 {
-                    _roomsLimit--;
-                    nextPos = position.add(direction.direction);
-                    doors[direction] = getId(nextPos.x, nextPos.y);
+                    neighbour = generateRoom(nextPos.x, nextPos.y);
+                    room.addDoor(direction, neighbour.id);
+                    opposite = DirectionName.getOpposite(direction.direction);
+                    neighbour.addDoor(opposite, room.id);
+                    neighbours.push(neighbour);
                 }
             }
 
-            return createRoom(id, type, doors);
-        }
-
-        public static function createRoom(id: String, type: int, doors: Dictionary):RoomState
-        {
-            var pos: Array = id.split(".");
-
-            var data: Object = {};
-            data["id"] = id;
-            data["x"] = pos[0];
-            data["y"] = pos[1];
-            data["type"] = type;
-            data["doors"] = doors;
-            return createRoomInstance(data);
-        }
-
-        private static function createRoomInstance(data: Object):RoomState
-        {
-            var room: RoomState = new RoomState();
-            room.init(data);
-            return room;
-        }
-
-        public static function createMockRoom(x: int, y: int):RoomState
-        {
-            var id: String = getId(x, y);
-
-            var type: int = Math.random() * 3 + 1;
-
-            var doors: Dictionary = new Dictionary();
-            doors[DirectionName.LEFT] = getId(x-1, y);
-            doors[DirectionName.RIGHT] = getId(x+1, y);
-            doors[DirectionName.UP] = getId(x, y-1);
-            doors[DirectionName.DOWN] = getId(x, y+1);
-
-            return createRoom(id, type, doors);
+            return neighbours;
         }
 
         private static function getId(x: int, y: int):String

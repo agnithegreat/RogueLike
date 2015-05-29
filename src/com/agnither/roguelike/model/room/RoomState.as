@@ -10,10 +10,9 @@ package com.agnither.roguelike.model.room
 
     public class RoomState
     {
-        private var _id: String;
         public function get id():String
         {
-            return _id;
+            return _size.x + "." + _size.y;
         }
 
         private var _type: int;
@@ -41,19 +40,33 @@ package com.agnither.roguelike.model.room
         public function RoomState()
         {
             _gameObjects = new Dictionary();
+            _doors = new Dictionary();
         }
 
         public function init(data: Object):void
         {
-            _id = data["id"];
             _type = data["type"];
             _size = new Rectangle(data["x"], data["y"], data["width"], data["height"]);
-            _doors = data["doors"];
+        }
+
+        public function addDoor(direction: DirectionName, id: String):void
+        {
+            _doors[direction] = id;
+        }
+
+        public function removeDoor(direction: DirectionName):void
+        {
+            delete _doors[direction];
         }
 
         public function getDoorId(direction: DirectionName):String
         {
             return _doors[direction];
+        }
+
+        public function toString():String
+        {
+            return id;
         }
     }
 }

@@ -5,7 +5,8 @@ package com.agnither.roguelike.view
 {
     import com.agnither.roguelike.controller.GameController;
     import com.agnither.roguelike.model.room.Room;
-    import com.agnither.utils.gui.components.AbstractComponent;
+import com.agnither.roguelike.model.room.RoomState;
+import com.agnither.utils.gui.components.AbstractComponent;
 
     import flash.geom.Point;
 
@@ -32,7 +33,7 @@ package com.agnither.roguelike.view
         public function GameView(game: GameController)
         {
             _game = game;
-            _game.room.addEventListener(Room.NEXT_ROOM, handleNextRoom);
+            _game.room.addEventListener(Room.TO_ROOM, handleToRoom);
         }
 
         override protected function initialize():void
@@ -49,7 +50,7 @@ package com.agnither.roguelike.view
             _pivot = new Point();
         }
 
-        private function handleNextRoom(event: Event):void
+        private function handleToRoom(event: Event):void
         {
             if (_tween)
             {
@@ -57,17 +58,15 @@ package com.agnither.roguelike.view
                 completeTween();
             }
 
-            _next = new RoomView(_game.room.currentRoom);
+            var room: RoomState = event.data as RoomState;
+            _next = new RoomView(room);
 
-            var direction: Point = event.data as Point;
-            var dx: int = direction.x * 640;
-            var dy: int = direction.y * 480;
-            _next.x = _room.x + dx;
-            _next.y = _room.y + dy;
+            _next.x = room.size.x * 640;
+            _next.y = room.size.y * 480;
             _rooms.addChild(_next);
 
-            _pivot.x += dx;
-            _pivot.y += dy;
+            _pivot.x = room.size.x * 640;
+            _pivot.y = room.size.y * 480;
 
             _tween = Starling.juggler.tween(this, 0.5, {pivotX: _pivot.x, pivotY: _pivot.y, transition: Transitions.EASE_OUT, onComplete: completeTween});
         }

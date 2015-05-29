@@ -3,7 +3,6 @@
  */
 package com.agnither.roguelike.utils
 {
-    import com.agnither.roguelike.enums.CbTypes;
     import com.agnither.roguelike.enums.CollisionGroups;
     import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.room.RoomState;
@@ -50,12 +49,6 @@ package com.agnither.roguelike.utils
                     doorPolygon.filter.collisionGroup = CollisionGroups.WALL;
                     doorPolygon.filter.collisionMask = room.getDoorId(direction) ? ~CollisionGroups.HERO : ~0;
                     doorPolygon.body = body;
-
-                    var sensorPolygon: Polygon = getPolygon(door["sensor"], level);
-                    sensorPolygon.filter.collisionGroup = CollisionGroups.DOOR;
-                    sensorPolygon.cbTypes.add(CbTypes.DOOR);
-                    sensorPolygon.sensorEnabled = true;
-                    sensorPolygon.body = body;
                 }
             }
 

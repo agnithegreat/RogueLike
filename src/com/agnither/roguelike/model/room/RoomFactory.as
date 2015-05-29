@@ -1,6 +1,3 @@
-/**
- * Created by desktop on 20.05.2015.
- */
 package com.agnither.roguelike.model.room
 {
     import com.agnither.roguelike.enums.DirectionName;
@@ -16,7 +13,7 @@ package com.agnither.roguelike.model.room
         public static function createMap():Dictionary
         {
             _map = new Dictionary();
-            _roomsLimit = 15;
+            _roomsLimit = 10;
 
             var room: RoomState = generateRoom(0, 0);
             var currentList: Array = [room];
@@ -73,7 +70,7 @@ package com.agnither.roguelike.model.room
                     {
                         room.addDoor(direction, neighbour.id);
                     }
-                } else if (_roomsLimit > 0 && Math.random() < 0.7)
+                } else if (_roomsLimit > 0 && Math.random() < 0.2 * nextPos.length)
                 {
                     neighbour = generateRoom(nextPos.x, nextPos.y);
                     room.addDoor(direction, neighbour.id);

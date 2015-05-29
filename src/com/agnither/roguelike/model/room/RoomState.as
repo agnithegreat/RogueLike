@@ -1,6 +1,3 @@
-/**
- * Created by desktop on 15.05.2015.
- */
 package com.agnither.roguelike.model.room
 {
     import com.agnither.roguelike.enums.DirectionName;
@@ -33,6 +30,16 @@ package com.agnither.roguelike.model.room
         public function get size():Rectangle
         {
             return _size;
+        }
+
+        private var _visited: Boolean;
+        public function get visited():Boolean
+        {
+            return _visited;
+        }
+        public function set visited(value: Boolean):void
+        {
+            _visited = value;
         }
 
         public var lastUpdate: int;

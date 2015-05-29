@@ -1,6 +1,3 @@
-/**
- * Created by desktop on 20.05.2015.
- */
 package com.agnither.roguelike.controller
 {
     import com.agnither.roguelike.model.objects.Hero;

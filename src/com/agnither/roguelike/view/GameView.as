@@ -1,12 +1,9 @@
-/**
- * Created by desktop on 21.05.2015.
- */
 package com.agnither.roguelike.view
 {
     import com.agnither.roguelike.controller.GameController;
     import com.agnither.roguelike.model.room.Room;
-import com.agnither.roguelike.model.room.RoomState;
-import com.agnither.utils.gui.components.AbstractComponent;
+    import com.agnither.roguelike.model.room.RoomState;
+    import com.agnither.utils.gui.components.AbstractComponent;
 
     import flash.geom.Point;
 

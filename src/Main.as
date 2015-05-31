@@ -5,7 +5,7 @@ package
 {
     import com.agnither.roguelike.App;
 
-    [SWF (frameRate = 60, width = 640, height = 480)]
+    [SWF (frameRate = 60, width = 1210, height = 770)]
     public class Main extends StarlingMainBase
     {
         public function Main()

@@ -1,5 +1,6 @@
 package com.agnither.roguelike.model.room
 {
+    import com.agnither.roguelike.Settings;
     import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.objects.GameObject;
     import com.agnither.roguelike.model.objects.Hero;
@@ -110,10 +111,10 @@ package com.agnither.roguelike.model.room
             var direction: Point = new Point();
 
             if (heroX < 0) direction.x = -1;
-            else if (heroX > 640) direction.x = 1;
+            else if (heroX > Settings.ROOM_WIDTH) direction.x = 1;
 
             if (heroY < 0) direction.y = -1;
-            else if (heroY > 480) direction.y = 1;
+            else if (heroY > Settings.ROOM_HEIGHT) direction.y = 1;
 
             if (direction.length > 0)
             {

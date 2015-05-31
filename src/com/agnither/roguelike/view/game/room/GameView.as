@@ -1,5 +1,6 @@
 package com.agnither.roguelike.view.game.room
 {
+    import com.agnither.roguelike.Settings;
     import com.agnither.roguelike.controller.GameController;
     import com.agnither.roguelike.model.room.Room;
     import com.agnither.roguelike.model.room.RoomState;
@@ -58,12 +59,12 @@ package com.agnither.roguelike.view.game.room
             var room: RoomState = event.data as RoomState;
             _next = new RoomView(room);
 
-            _next.x = room.size.x * 640;
-            _next.y = room.size.y * 480;
+            _next.x = room.size.x * Settings.ROOM_WIDTH;
+            _next.y = room.size.y * Settings.ROOM_HEIGHT;
             _rooms.addChild(_next);
 
-            _pivot.x = room.size.x * 640;
-            _pivot.y = room.size.y * 480;
+            _pivot.x = room.size.x * Settings.ROOM_WIDTH;
+            _pivot.y = room.size.y * Settings.ROOM_HEIGHT;
 
             _tween = Starling.juggler.tween(this, 0.5, {pivotX: _pivot.x, pivotY: _pivot.y, transition: Transitions.EASE_OUT, onComplete: completeTween});
         }

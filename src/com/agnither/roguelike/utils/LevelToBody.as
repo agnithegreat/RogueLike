@@ -3,6 +3,7 @@
  */
 package com.agnither.roguelike.utils
 {
+    import com.agnither.roguelike.Settings;
     import com.agnither.roguelike.enums.CollisionGroups;
     import com.agnither.roguelike.enums.DirectionName;
     import com.agnither.roguelike.model.room.RoomState;
@@ -23,26 +24,26 @@ package com.agnither.roguelike.utils
     {
         public static function create(room: RoomState):Body
         {
-            var definition: String = "assets.level.LevelTest" + room.type + "MC";
-            var level: DisplayObjectContainer = AbstractComponent.getResource(definition);
-            var walls: Sprite = level["walls"];
-
             var body: Body = new Body(BodyType.STATIC);
-            body.position.x = room.size.x * 640;
-            body.position.y = room.size.y * 480;
+            body.position.x = room.size.x * Settings.ROOM_WIDTH;
+            body.position.y = room.size.y * Settings.ROOM_HEIGHT;
 
-            var wallsAmount: int = walls.numChildren;
-            for (var i:int = 0; i < wallsAmount; i++)
+            var definition: String = "assets.level.Level" + room.type + "MC";
+            var level: DisplayObjectContainer = AbstractComponent.getResource(definition);
+
+            var physics: Sprite = level["physics"];
+            var physicsAmount: int = physics.numChildren;
+            for (var i:int = 0; i < physicsAmount; i++)
             {
-                var wallPolygon: Polygon = getPolygon(walls.getChildAt(i), level);
-                wallPolygon.filter.collisionGroup = CollisionGroups.WALL;
-                wallPolygon.filter.collisionMask = ~0;
-                wallPolygon.body = body;
+                var physicsPolygon: Polygon = getPolygon(physics.getChildAt(i), level);
+                physicsPolygon.filter.collisionGroup = CollisionGroups.WALL;
+                physicsPolygon.filter.collisionMask = ~0;
+                physicsPolygon.body = body;
             }
 
             for each (var direction: DirectionName in DirectionName.DIRECTIONS)
             {
-                var door: Sprite = level[direction.name];
+                var door: Sprite = level["door_" + direction.name];
                 if (door != null)
                 {
                     var doorPolygon: Polygon = getPolygon(door["shape"], level);

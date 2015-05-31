@@ -41,7 +41,8 @@ package com.agnither.roguelike.model.room
             var data: Object = {};
             data["x"] = x;
             data["y"] = y;
-            data["type"] = Math.random() * 3 + 1;
+//            data["type"] = Math.random() * 3 + 1;
+            data["type"] = 1;
 
             var room: RoomState = new RoomState();
             room.init(data);

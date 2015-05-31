@@ -55,7 +55,6 @@ package com.agnither.roguelike.view.game.minimap
 
             x = 160;
             y = 120;
-//            alpha = 0.5;
             clipRect = new Rectangle(-160, -120, 320, 240);
         }
 

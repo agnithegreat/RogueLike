@@ -1,5 +1,6 @@
 package com.agnither.roguelike.controller
 {
+    import com.agnither.roguelike.Settings;
     import com.agnither.roguelike.model.objects.Hero;
     import com.agnither.roguelike.model.room.Room;
     import com.agnither.roguelike.model.room.RoomFactory;
@@ -49,7 +50,7 @@ package com.agnither.roguelike.controller
 
             var hero: Hero = new Hero();
             hero.init({hp: 5, speed: 200});
-            hero.place(320, 240);
+            hero.place(Settings.ROOM_WIDTH/2, Settings.ROOM_HEIGHT/2);
             _currentRoom.setHero(hero);
 
             start();
